@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#092d52">
+  <meta name="description" content="Sistema SEGURITEC para el control y seguimiento de visitas técnicas de mantenimiento.">
+  <title>SEGURITEC | Control de visitas técnicas</title>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <div id="appShell">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-mark">S</div>
+        <div>
+          <h1>SEGURITEC</h1>
+          <p>Control de visitas técnicas</p>
+        </div>
+      </div>
+      <div class="header-actions">
+        <div class="connection"><span class="status-dot"></span><span id="connectionLabel">Conectando...</span></div>
+
+      </div>
+    </header>
+
+    <main>
+      <div class="warning-note" role="note">Versión de prueba sin acceso restringido: utiliza datos de demostración o no confidenciales. Las visitas se comparten con cualquiera que acceda al sitio.</div>
+      <div class="lead">
+        <div>
+          <div class="eyebrow dark">SEGURITEC · OPERACIONES Y MANTENIMIENTO</div>
+          <h2>Visitas técnicas</h2>
+          <p>Registra trabajos, evidencia y documentos de cada servicio.</p>
+        </div>
+        <div class="stats">
+          <div class="stat"><b id="totalStat">0</b><span>Visitas registradas</span></div>
+          <div class="stat"><b id="pendingStat">0</b><span>Pendientes</span></div>
+        </div>
+      </div>
+
+      <div class="layout">
+        <section class="panel form-panel">
+          <div class="panel-head">
+            <div>
+              <h3 id="formTitle">Nueva visita de mantenimiento</h3>
+              <small id="formSubtitle">Completa la información del servicio</small>
+            </div>
+            <button id="newBtn" class="btn secondary" type="button">＋ Nueva visita</button>
+          </div>
+
+          <form id="visitForm" class="card-body">
+            <section class="section">
+              <div class="section-head"><h4><span class="step">01</span>Información general</h4></div>
+              <div class="fields">
+                <div class="field"><label for="client">Cliente / empresa <span class="required">*</span></label><input id="client" required placeholder="Nombre del cliente o empresa"></div>
+                <div class="field"><label for="project">Lugar o proyecto <span class="required">*</span></label><input id="project" required placeholder="Ej. Planta de bombeo, sucursal..."></div>
+                <div class="field"><label for="location">Dirección / ubicación</label><input id="location" placeholder="Dirección o referencia del sitio"></div>
+                <div class="field"><label for="technician">Técnico que realizó la revisión <span class="required">*</span></label><input id="technician" required placeholder="Nombre del técnico responsable"></div>
+                <div class="field"><label for="date">Fecha de visita <span class="required">*</span></label><input id="date" type="date" required></div>
+                <div class="field"><label for="type">Tipo de servicio</label><select id="type"><option>Mantenimiento preventivo</option><option>Mantenimiento correctivo</option><option>Inspección técnica</option><option>Instalación</option><option>Diagnóstico</option><option>Otro</option></select></div>
+                <div class="field"><label for="statusField">Estado de la visita</label><select id="statusField"><option value="finalizada">Finalizada</option><option value="proceso">En proceso</option><option value="pendiente">Pendiente de seguimiento</option></select></div>
+                <div class="field"><label for="hours">Tiempo invertido (horas)</label><input id="hours" type="number" min="0" step="0.25" placeholder="Ej. 2.5"></div>
+              </div>
+            </section>
+
+            <section class="section">
+              <div class="section-head"><h4><span class="step">02</span>Persona que recibió el mantenimiento</h4></div>
+              <div class="fields">
+                <div class="field"><label for="receiverName">Nombre completo</label><input id="receiverName" placeholder="Nombre de quien recibió el servicio"></div>
+                <div class="field"><label for="receiverRole">Cargo</label><input id="receiverRole" placeholder="Ej. Jefe de mantenimiento"></div>
+              </div>
+            </section>
+
+            <section class="section">
+              <div class="section-head"><h4><span class="step">03</span>Equipos y actividades revisadas</h4><button id="addItem" class="addrow" type="button">＋ Agregar equipo</button></div>
+              <div class="table-wrap">
+                <table class="itemtable">
+                  <thead><tr><th>Equipo / sistema</th><th>Actividad realizada</th><th>Cantidad</th><th>Unidad</th><th>Precio unit.</th><th></th></tr></thead>
+                  <tbody id="itemsBody"></tbody>
+                </table>
+              </div>
+              <div class="totalbar"><label class="checkline"><input id="includeCosts" type="checkbox"> Incluir costos en el reporte del cliente</label><div>Total registrado <strong id="totalPrice">$0.00</strong></div></div>
+              <div class="field labor-field"><label for="labor">Mano de obra adicional (USD)</label><input id="labor" type="number" min="0" step="0.01" placeholder="0.00"></div>
+            </section>
+
+            <section class="section">
+              <div class="section-head"><h4><span class="step">04</span>Trabajo realizado y observaciones</h4></div>
+              <div class="fields">
+                <div class="field full"><label for="work">Descripción del trabajo realizado <span class="required">*</span></label><textarea id="work" required placeholder="Describe las revisiones, ajustes, reparaciones o trabajos realizados..."></textarea></div>
+                <div class="field full"><label for="observations">Hallazgos / observaciones</label><textarea id="observations" placeholder="Describe anomalías, daños o condiciones encontradas..."></textarea></div>
+                <div class="field full"><label for="recommendations">Recomendaciones</label><textarea id="recommendations" placeholder="Acciones recomendadas o repuestos que se deben considerar..."></textarea></div>
+                <div class="field"><label for="nextVisit">Próxima visita (si aplica)</label><input id="nextVisit" type="date"></div>
+              </div>
+            </section>
+
+            <section class="section">
+              <div class="section-head"><h4><span class="step">05</span>Evidencia fotográfica</h4><span id="photoCount" class="counter">0 de 10 fotos</span></div>
+              <div class="photo-actions">
+                <label class="upload">📷 Tomar fotografía<input id="cameraInput" type="file" accept="image/*" capture="environment"></label>
+                <label class="upload">＋ Seleccionar fotografías<input id="photoInput" type="file" accept="image/*" multiple></label>
+              </div>
+              <p class="hint">Las fotografías se optimizan y se almacenan en Firebase Storage al guardar la visita. No incluyas información confidencial: esta versión no tiene control de acceso por persona.</p>
+              <div id="photoGrid" class="photo-grid"></div>
+            </section>
+
+            <section class="section">
+              <div class="section-head"><h4><span class="step">06</span>Documentos adjuntos</h4><span id="documentCount" class="counter">0 de 8 archivos</span></div>
+              <div class="doc-actions">
+                <label class="upload">📎 Adjuntar cotización u otro documento<input id="documentInput" type="file" accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png,.txt,application/pdf,image/jpeg,image/png,text/plain" multiple></label>
+              </div>
+              <p class="hint">PDF, Word, Excel, imágenes o TXT. Máximo 10 MB por archivo y 25 MB en total por visita.</p>
+              <div id="documentList" class="documents"></div>
+            </section>
+
+            <div class="actions">
+              <div><button id="clearBtn" class="btn" type="button">Limpiar formulario</button><button id="pdfBtn" class="btn secondary" type="button">Vista / PDF</button></div>
+              <button id="saveBtn" class="btn primary" type="submit">Guardar visita</button>
+            </div>
+            <p id="saveStatus" class="status" role="status"></p>
+          </form>
+        </section>
+
+        <aside class="panel history-panel">
+          <div class="panel-head"><div><h3>Historial de visitas</h3><small>Actualización en tiempo real</small></div><span class="live-indicator">EN VIVO</span></div>
+          <div class="sidebar-body">
+            <input id="search" class="search" type="search" placeholder="Buscar cliente, proyecto o técnico...">
+            <div id="history" class="history"><div class="side-empty">Cargando visitas...</div></div>
+          </div>
+          <div class="sidebar-foot">
+            <p>Respalda los registros periódicamente. El JSON contiene los datos y referencias de archivos, no una copia física de los archivos almacenados.</p>
+            <div class="filetools"><button id="exportBtn" class="mini-btn" type="button">↓ Exportar respaldo JSON</button><label class="mini-btn file-label">↑ Importar JSON<input id="importFile" type="file" accept="application/json,.json"></label></div>
+          </div>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <div id="toast" class="toast" role="status"></div>
+  <section id="printView" class="report-only"></section>
+  <script type="module" src="./app.js"></script>
+</body>
+</html>
